@@ -233,22 +233,20 @@ long unsigned int read_csv(const char *nome_arquivo, Processo **processos) {
  * - Zero se `a` for igual a `b`.
  * - Um valor positivo se `a` for maior que `b`.
  */
-int compara_data(const void *a, const void *b) {
-    const Processo *dado1 = (const Processo *)b;
-    const Processo *dado2 = (const Processo *)a;
+int compara_data(const Processo *a, const Processo *b) {
 
     // Verifica se algum dos campos 'data' é NULL
-    if (dado1->data == NULL && dado2->data == NULL) {
+    if (b->data == NULL && a->data == NULL) {
         return 0; // Ambos são NULL, considerados iguais
     }
-    if (dado1->data == NULL) {
-        return 1; // Coloca 'dado1' depois de 'dado2'
+    if (b->data == NULL) {
+        return 1; // Coloca 'b' depois de 'a'
     }
-    if (dado2->data == NULL) {
-        return -1; // Coloca 'dado2' depois de 'dado1'
+    if (a->data == NULL) {
+        return -1; // Coloca 'a' depois de 'b'
     }
 
-    return (int) difftime(mktime(dado1->data), mktime(dado2->data));
+    return (int) difftime(mktime(b->data), mktime(a->data));
 
 }
 
@@ -265,12 +263,10 @@ int compara_data(const void *a, const void *b) {
  * - Zero se os IDs forem iguais.
  * - Um valor positivo se o ID de `a` for maior que o ID de `b`.
  */
-int compara_id(const void *a, const void *b) {
-    const Processo *dado1 = (const Processo *)a;
-    const Processo *dado2 = (const Processo *)b;
+int compara_id(const Processo *a, const Processo *b) {
 
     // Retorna a diferença entre os IDs
-    return dado1->id - dado2->id;
+    return a->id - b->id;
 }
 
 /**
@@ -423,4 +419,70 @@ int count_dias(Processo *processos, long unsigned int processos_size, int id) {
     int diff_days = (int)(diff_seconds / (60 * 60 * 24));
 
     return diff_days; // Retorna a diferença em dias
+}
+
+/**
+ * quicksort - Implementa o algoritmo de ordenação QuickSort.
+ * 
+ * @vetor: Ponteiro para o vetor de estruturas `Processo` que será ordenado.
+ * @inf: Índice inferior do subvetor a ser ordenado.
+ * @sup: Índice superior do subvetor a ser ordenado.
+ * @compara: Ponteiro para a função de comparação que define a ordem dos elementos.
+ *           A função deve retornar:
+ *           - Valor negativo se o primeiro elemento for menor que o segundo.
+ *           - Zero se os elementos forem iguais.
+ *           - Valor positivo se o primeiro elemento for maior que o segundo.
+ * 
+ * Esta função ordena o vetor de processos utilizando o algoritmo QuickSort de forma recursiva.
+ * 
+ * Retorna: Nada. O vetor é ordenado diretamente na memória.
+ */
+void quicksort(Processo *vetor, int inf, int sup, int (*compara)(const Processo *, const Processo *)) {
+    if (inf < sup) {
+        // Encontra o pivô
+        int p = partition(vetor, inf, sup, compara);
+        // Ordena os elementos antes e depois da partição
+        quicksort(vetor, inf, p - 1, compara);
+        // quicksort(vetor, p + 1, sup, compara);
+        quicksort(vetor, p , sup, compara);
+    }
+}
+
+/**
+ * partition - Particiona o vetor para o algoritmo QuickSort.
+ * 
+ * @vetor: Ponteiro para o vetor de estruturas `Processo` que está sendo ordenado.
+ * @inf: Índice inferior do subvetor a ser particionado.
+ * @sup: Índice superior do subvetor a ser particionado (o pivô está localizado neste índice).
+ * @compara: Ponteiro para a função de comparação que define a ordem dos elementos.
+ *           A função deve retornar:
+ *           - Valor negativo se o primeiro elemento for menor que o segundo.
+ *           - Zero se os elementos forem iguais.
+ *           - Valor positivo se o primeiro elemento for maior que o segundo.
+ * 
+ * Esta função reorganiza os elementos do vetor de forma que todos os elementos menores ou iguais ao pivô
+ * fiquem à esquerda e todos os elementos maiores fiquem à direita. O pivô é escolhido como o elemento
+ * central do subvetor. Essa função foi adaptada da versão nos slides.
+ * 
+ * Retorna: O índice onde a partição foi concluída, que será usado para dividir o vetor no QuickSort.
+ */
+int partition(Processo *vetor, int inf, int sup, int (*compara)(const Processo *, const Processo *)) {
+
+    Processo pivot = vetor[(inf+sup)/2];
+    int i = inf; // indice para percorrer subvetor da esquerda
+    int j = sup; // indice para percorrer subvetor da direita
+    while(i<=j) {
+        while(compara(&vetor[i], &pivot) < 0) i++;
+        while(compara(&vetor[j], &pivot) > 0) j--;
+        if( i<= j) {
+            // realiza swap
+            Processo temp = vetor[i];
+            vetor[i] = vetor[j];
+            vetor[j] = temp;
+            i++;
+            j--;
+        }
+    }
+    return i; // retorna a posição do pivô
+
 }

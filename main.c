@@ -15,14 +15,14 @@ int main()
     print_processos(&processos, 0, MAX_DADOS_PRINT); // Imprime os 2 primeiros processos
 
     printf("\n1. Ordenar, em ordem crescente, o conjunto de processos a partir do atributo “id”;\n");
-    qsort(processos, qnt_processos, sizeof(Processo), compara_id);
+    quicksort(processos, 0, qnt_processos - 1, compara_id);
     export_csv("processo_043_202409032338_ordenado_id.csv", &processos, 0, qnt_processos);
     print_processos(&processos, 0, MAX_DADOS_PRINT);
 
     printf("\n2. Ordenar, em ordem decrescente, o conjunto de processos a partir do atributo “data_ajuizamento”;\n");
-    qsort(processos, qnt_processos, sizeof(Processo), compara_data);
-    print_processos(&processos, 0, MAX_DADOS_PRINT);
+    quicksort(processos, 0, qnt_processos - 1, compara_data);
     export_csv("processo_043_202409032338_ordenado_data.csv", &processos, 0, qnt_processos);
+    print_processos(&processos, 0, MAX_DADOS_PRINT);
 
     printf("\n3. Contar quantos processos estão vinculados a um determinado “id_classe”;\n");
     printf("Quantidade de processos com id_classe %d: %d\n", id_classe, count_id(processos, qnt_processos, id_classe));

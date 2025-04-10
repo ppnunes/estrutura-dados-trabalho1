@@ -37,11 +37,13 @@ void print_processos(Processo **processos, long unsigned int offset, long unsign
 void export_csv(const char *nome_arquivo, Processo **processos, long unsigned int offset, long unsigned int amount);
 int parse_line(const char *linha, Processo *processos);
 long unsigned int read_csv(const char *nome_arquivo, Processo **processos);
-int compara_data(const void *a, const void *b);
-int compara_id(const void *a, const void *b);
+int compara_data(const Processo *a, const Processo *b);
+int compara_id(const Processo *a, const Processo *b);
 int count_id(Processo *processos, long unsigned int processos_size, int id_classe);
 long unsigned int count_assuntos(Processo *processos, long unsigned int processos_size);
 int mais_de_um_assunto(Processo *processos, long unsigned int processos_size);
 int count_dias(Processo *processos, long unsigned int processos_size, int id);
 
+void quicksort(Processo *vetor, int inf, int sup, int (*compara)(const Processo *, const Processo *));
+int partition(Processo *vetor, int inf, int sup, int (*compara)(const Processo *, const Processo *));
 #endif
