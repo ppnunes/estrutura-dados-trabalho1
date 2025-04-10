@@ -1,7 +1,6 @@
 #ifndef PROCESSO_H
 #define PROCESSO_H
 
-#define _GNU_SOURCE // para habilitar strptime (https://stackoverflow.com/questions/5378778/what-does-d-xopen-source-do-mean)
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>

@@ -153,11 +153,14 @@ int parse_line(const char *linha, Processo *processos) {
 
             // Aloca memória para a data e converte a string para `struct tm`
             processos->data = malloc(sizeof(struct tm));
-            strptime(processos->data_string, "%Y-%m-%d %H:%M:%S", processos->data);
-
-            // Ajusta os campos da estrutura `tm` para o formato correto
-            processos->data->tm_year += 1900; // Ajusta o ano
-            processos->data->tm_mon += 1;    // Ajusta o mês
+            sscanf(processos->data_string, "%d-%d-%d %d:%d:%d",
+                &processos->data->tm_year,
+                &processos->data->tm_mon,
+                &processos->data->tm_mday,
+                &processos->data->tm_hour,
+                &processos->data->tm_min,
+                &processos->data->tm_sec
+            );
 
             break; // Interrompe o loop, pois a análise foi bem-sucedida
         }
